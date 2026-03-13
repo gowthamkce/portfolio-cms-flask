@@ -4,7 +4,7 @@
 
 'use strict';
 
-const API = 'http://127.0.0.1:5000/api';
+const API = 'https://portfolio-cms-flask.onrender.com/api';
 
 const PAGE_META = {
   dashboard:  ['Dashboard',  'Live portfolio overview'],
