@@ -2,7 +2,7 @@ const API_BASE =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:5000"
-    : "https://portfolio-cms-1-22kt.onrender.com";
+    : "https://portfolio-cms-flask.onrender.com";
 
 const API = API_BASE + "/api";
 
