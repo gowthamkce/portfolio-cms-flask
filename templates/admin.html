@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Portfolio Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+
+<!-- ── Sidebar ──────────────────────────────────────────────────────────── -->
+<aside class="sidebar" id="sidebar">
+  <div class="logo">
+    <div class="logo-mark">⬡ FOLIO</div>
+    <div class="logo-sub">Admin Panel</div>
+  </div>
+
+  <nav class="sidenav">
+    <div class="nav-group-label">Overview</div>
+    <button class="nav-item active" data-page="dashboard">
+      <span class="nav-icon">◈</span> Dashboard
+    </button>
+
+    <div class="nav-group-label">Content</div>
+    <button class="nav-item" data-page="profile">
+      <span class="nav-icon">◉</span> Profile
+    </button>
+    <button class="nav-item" data-page="projects">
+      <span class="nav-icon">◧</span> Projects
+    </button>
+    <button class="nav-item" data-page="skills">
+      <span class="nav-icon">◎</span> Skills
+    </button>
+    <button class="nav-item" data-page="experience">
+      <span class="nav-icon">◫</span> Experience
+    </button>
+    <button class="nav-item" data-page="education">
+      <span class="nav-icon">◩</span> Education
+    </button>
+
+    <div class="nav-group-label">Engagement</div>
+    <button class="nav-item" data-page="messages">
+      <span class="nav-icon">◷</span> Messages
+      <span class="nav-badge" id="msg-badge" style="display:none">0</span>
+    </button>
+    <button class="nav-item" data-page="analytics">
+      <span class="nav-icon">◈</span> Analytics
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="avatar" id="admin-avatar">A</div>
+    <div class="user-info">
+      <div class="user-name" id="admin-name">Admin</div>
+      <div class="user-role">Portfolio Owner</div>
+    </div>
+    <button class="logout-btn" id="logout-btn" title="Logout">↩</button>
+  </div>
+</aside>
+
+<!-- ── Main ─────────────────────────────────────────────────────────────── -->
+<div class="main">
+  <header class="topbar">
+    <div>
+      <div class="page-title" id="page-title">Dashboard</div>
+      <div class="page-sub" id="page-sub">Welcome back</div>
+    </div>
+    <div class="topbar-right">
+      <div class="live-pill">
+        <div class="live-dot"></div>
+        Live
+      </div>
+      <a href="../" target="_blank" class="btn-outline">View Site ↗</a>
+    </div>
+  </header>
+
+  <!-- ── Toast ─────────────────────────────────────────────────────────── -->
+  <div class="toast" id="toast">
+    <span class="toast-icon" id="toast-icon">✓</span>
+    <span id="toast-msg">Saved</span>
+  </div>
+
+  <!-- ── Page: Dashboard ──────────────────────────────────────────────── -->
+  <div class="page active" id="page-dashboard">
+    <div class="stat-grid">
+      <div class="stat-card c1">
+        <div class="stat-icon">👁</div>
+        <div class="stat-val" id="s-views">—</div>
+        <div class="stat-lbl">Views (30d)</div>
+        <div class="stat-sub" id="s-unique">— unique visitors</div>
+      </div>
+      <div class="stat-card c2">
+        <div class="stat-icon">✉</div>
+        <div class="stat-val" id="s-msgs">—</div>
+        <div class="stat-lbl">Messages</div>
+        <div class="stat-sub" id="s-unread">— unread</div>
+      </div>
+      <div class="stat-card c3">
+        <div class="stat-icon">📁</div>
+        <div class="stat-val" id="s-projects">—</div>
+        <div class="stat-lbl">Projects</div>
+      </div>
+      <div class="stat-card c4">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-val" id="s-skills">—</div>
+        <div class="stat-lbl">Skills</div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <!-- Recent Messages -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Recent Messages</span>
+          <button class="btn-link" onclick="showPage('messages')">View all →</button>
+        </div>
+        <div class="card-body" id="dash-messages">
+          <div class="empty">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Traffic (7 days) -->
+      <div class="card">
+        <div class="card-head">
+          <span class="card-title">Traffic — Last 7 Days</span>
+        </div>
+        <div class="card-body">
+          <div class="bar-chart" id="traffic-chart"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Page: Profile ────────────────────────────────────────────────── -->
+  <div class="page" id="page-profile">
+    <div class="card" style="max-width:740px">
+      <div class="card-head">
+        <span class="card-title">Personal Information</span>
+        <button class="btn-primary" id="save-profile-btn" onclick="saveProfile()">Save Changes</button>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="fg"><label>Full Name</label><input id="p-name" type="text" placeholder="Jane Developer" /></div>
+          <div class="fg"><label>Title / Role</label><input id="p-title" type="text" placeholder="Full Stack Developer" /></div>
+          <div class="fg full"><label>Bio</label><textarea id="p-bio" placeholder="Write a short bio..."></textarea></div>
+          <div class="fg"><label>Email (public)</label><input id="p-email" type="email" placeholder="jane@example.com" /></div>
+          <div class="fg"><label>Profile Image</label><input type="file" id="p-image" accept="image/*"></div>
+          <div class="fg"><label>Resume Link</label><input id="p-resume" type="text" placeholder="https://drive.google.com/..." /></div>
+          <div class="fg"><label>GitHub URL</label><input id="p-github" type="text" placeholder="https://github.com/..." /></div>
+          <div class="fg"><label>LinkedIn URL</label><input id="p-linkedin" type="text" placeholder="https://linkedin.com/in/..." /></div>
+          <div class="fg"><label>Twitter / X URL</label><input id="p-twitter" type="text" placeholder="https://twitter.com/..." /></div>
+        </div>
+        <input type="hidden" id="p-id" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Page: Projects ───────────────────────────────────────────────── -->
+  <div class="page" id="page-projects">
+    <div class="section-toolbar">
+      <div class="section-count"><span id="project-count">0</span> projects</div>
+      <button class="btn-primary" onclick="openProjectModal()">+ Add Project</button>
+    </div>
+    <div class="items-grid" id="projects-grid"></div>
+  </div>
+
+  <!-- ── Page: Skills ─────────────────────────────────────────────────── -->
+  <div class="page" id="page-skills">
+    <div class="section-toolbar">
+      <div class="section-count"><span id="skill-count">0</span> skills</div>
+      <button class="btn-primary" onclick="openSkillModal()">+ Add Skill</button>
+    </div>
+    <div class="skills-table-wrap card">
+      <div class="card-body">
+        <table class="data-table" id="skills-table">
+          <thead>
+            <tr>
+              <th>Skill Name</th>
+              <th>Category</th>
+              <th>Level</th>
+              <th>Progress</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="skills-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Page: Experience ─────────────────────────────────────────────── -->
+  <div class="page" id="page-experience">
+    <div class="section-toolbar">
+      <div class="section-count"><span id="exp-count">0</span> entries</div>
+      <button class="btn-primary" onclick="openExpModal()">+ Add Experience</button>
+    </div>
+    <div class="items-grid" id="experience-grid"></div>
+  </div>
+
+  <!-- ── Page: Education ──────────────────────────────────────────────── -->
+  <div class="page" id="page-education">
+    <div class="section-toolbar">
+      <div class="section-count"><span id="edu-count">0</span> entries</div>
+      <button class="btn-primary" onclick="openEduModal()">+ Add Education</button>
+    </div>
+    <div class="items-grid" id="education-grid"></div>
+  </div>
+
+  <!-- ── Page: Messages ───────────────────────────────────────────────── -->
+  <div class="page" id="page-messages">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Contact Messages</span>
+        <span class="badge-red" id="unread-badge" style="display:none">0 unread</span>
+      </div>
+      <div class="card-body" style="padding:0">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width:16px"></th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Subject</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="messages-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Page: Analytics ──────────────────────────────────────────────── -->
+  <div class="page" id="page-analytics">
+    <div class="stat-grid">
+      <div class="stat-card c1">
+        <div class="stat-val" id="a-total">—</div>
+        <div class="stat-lbl">Total Views (30d)</div>
+      </div>
+      <div class="stat-card c2">
+        <div class="stat-val" id="a-unique">—</div>
+        <div class="stat-lbl">Unique Visitors</div>
+      </div>
+    </div>
+    <div class="dash-grid">
+      <div class="card">
+        <div class="card-head"><span class="card-title">Traffic — Last 7 Days</span></div>
+        <div class="card-body"><div class="bar-chart" id="analytics-chart"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="card-title">Top Pages</span></div>
+        <div class="card-body" id="top-pages"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /main -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     MODALS
+════════════════════════════════════════════════════════ -->
+
+<!-- Project Modal -->
+<div class="modal-overlay" id="project-modal" onclick="if(event.target===this)closeModal('project-modal')">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="project-modal-title">Add Project</div>
+      <button class="modal-close" onclick="closeModal('project-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg full"><label>Title *</label><input id="pm-title" placeholder="My Awesome Project" /></div>
+        <div class="fg full"><label>Description</label><textarea id="pm-desc" placeholder="Brief project description..."></textarea></div>
+        <div class="fg full"><label>Tech Stack (comma-separated)</label><input id="pm-stack" placeholder="React, Node.js, MongoDB" /></div>
+        <div class="fg"><label>GitHub URL</label><input id="pm-github" placeholder="https://github.com/..." /></div>
+        <div class="fg"><label>Live URL</label><input id="pm-live" placeholder="https://myproject.com" /></div>
+        <div class="fg full">
+          <label>Project Image</label>
+          <input type="file" id="pm-image" accept="image/*">
+        </div>
+        <div class="fg" style="display:flex;align-items:center;gap:10px;padding-top:22px">
+          <input type="checkbox" id="pm-featured" style="width:auto" />
+          <label for="pm-featured" style="font-size:11px;text-transform:none;letter-spacing:0;cursor:pointer">Featured project</label>
+        </div>
+      </div>
+      <input type="hidden" id="pm-id" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('project-modal')">Cancel</button>
+      <button class="btn-primary" onclick="saveProject()">Save Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- Skill Modal -->
+<div class="modal-overlay" id="skill-modal" onclick="if(event.target===this)closeModal('skill-modal')">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="skill-modal-title">Add Skill</div>
+      <button class="modal-close" onclick="closeModal('skill-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg"><label>Skill Name *</label><input id="sm-name" placeholder="e.g. TypeScript" /></div>
+        <div class="fg">
+          <label>Category</label>
+          <input id="sm-cat" placeholder="Frontend / Backend / DevOps" list="cat-list" />
+          <datalist id="cat-list">
+            <option>Frontend</option><option>Backend</option><option>DevOps</option>
+            <option>Database</option><option>Mobile</option><option>Design</option><option>General</option>
+          </datalist>
+        </div>
+        <div class="fg full">
+          <label>Level</label>
+          <select id="sm-level">
+            <option>Beginner</option>
+            <option>Intermediate</option>
+            <option selected>Advanced</option>
+            <option>Expert</option>
+          </select>
+        </div>
+      </div>
+      <input type="hidden" id="sm-id" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('skill-modal')">Cancel</button>
+      <button class="btn-primary" onclick="saveSkill()">Save Skill</button>
+    </div>
+  </div>
+</div>
+
+<!-- Experience Modal -->
+<div class="modal-overlay" id="exp-modal" onclick="if(event.target===this)closeModal('exp-modal')">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="exp-modal-title">Add Experience</div>
+      <button class="modal-close" onclick="closeModal('exp-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg"><label>Company *</label><input id="em-company" placeholder="Acme Corp" /></div>
+        <div class="fg"><label>Role / Title *</label><input id="em-role" placeholder="Senior Developer" /></div>
+        <div class="fg"><label>Start Date *</label><input id="em-start" type="date" /></div>
+        <div class="fg"><label>End Date (leave empty = current)</label><input id="em-end" type="date" /></div>
+        <div class="fg"><label>Location</label><input id="em-location" placeholder="Remote / New York, NY" /></div>
+        <div class="fg full"><label>Description</label><textarea id="em-desc" placeholder="Key responsibilities and achievements..."></textarea></div>
+      </div>
+      <input type="hidden" id="em-id" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('exp-modal')">Cancel</button>
+      <button class="btn-primary" onclick="saveExperience()">Save Experience</button>
+    </div>
+  </div>
+</div>
+
+<!-- Education Modal -->
+<div class="modal-overlay" id="edu-modal" onclick="if(event.target===this)closeModal('edu-modal')">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="edu-modal-title">Add Education</div>
+      <button class="modal-close" onclick="closeModal('edu-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg full"><label>Institution *</label><input id="edm-institution" placeholder="State University" /></div>
+        <div class="fg"><label>Degree *</label><input id="edm-degree" placeholder="B.Sc. Computer Science" /></div>
+        <div class="fg"><label>Field of Study</label><input id="edm-field" placeholder="Computer Science" /></div>
+        <div class="fg"><label>Start Year</label><input id="edm-start" type="number" placeholder="2018" min="1950" max="2099" /></div>
+        <div class="fg"><label>End Year (empty = ongoing)</label><input id="edm-end" type="number" placeholder="2022" min="1950" max="2099" /></div>
+        <div class="fg"><label>GPA (optional)</label><input id="edm-gpa" placeholder="3.8 / 4.0" /></div>
+        <div class="fg full"><label>Description</label><textarea id="edm-desc" placeholder="Relevant coursework, honors, activities..."></textarea></div>
+      </div>
+      <input type="hidden" id="edm-id" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('edu-modal')">Cancel</button>
+      <button class="btn-primary" onclick="saveEducation()">Save Education</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal-overlay" id="confirm-modal" onclick="if(event.target===this)closeModal('confirm-modal')">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-head">
+      <div class="modal-title">Confirm Delete</div>
+      <button class="modal-close" onclick="closeModal('confirm-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);line-height:1.7" id="confirm-msg">Are you sure you want to delete this item? This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeModal('confirm-modal')">Cancel</button>
+      <button class="btn-danger" id="confirm-ok-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/js/dashboard.js"></script>
+</body>
+</html>

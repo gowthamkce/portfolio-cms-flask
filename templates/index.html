@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gowtham portz</title>
+    <meta name="description" content="Gowtham is a Full Stack Developer, Data Analyst, and Business Solution Specialist based in Coimbatore, Tiruppur, and Erode. Skilled in Python, Flask, React, SQL, and Data Analytics.">
+    <meta name="keywords" content="Full Stack Developer Coimbatore, Web Developer Coimbatore, Data Analyst Coimbatore, Software Developer Tiruppur, Python Developer Tiruppur, Business Analyst Erode, Freelance Developer Coimbatore, Portfolio Developer Tamil Nadu">
+    <meta name="author" content="Gowtham">
+    <meta name="robots" content="index, follow">
+    <link rel="stylesheet" href="/static/css/index.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <nav id="navbar">
+  <a href="#" class="nav-logo" id="nav-logo">⬡ FOLIO</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-admin" onclick="openModal()">Admin ⬡</button>
+    <a href="#contact" class="btn-hire">Hire Me</a>
+  </div>
+</nav>
+
+<!-- ── Login Modal ──────────────────────────────────────────────────────── -->
+<div class="overlay" id="login-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-icon">⬡</div>
+    <div class="modal-h">Admin Login</div>
+    <div class="modal-sub">Sign in to manage your portfolio content and analytics.</div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Email</label>
+      <input type="email" id="m-email" placeholder="admin@example.com" autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()" />
+    </div>
+    <div class="form-group" style="margin-bottom:6px">
+      <label>Password</label>
+      <input type="password" id="m-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" />
+    </div>
+    <div class="modal-err" id="modal-err"></div>
+    <button class="modal-btn" id="login-btn" onclick="doLogin()">
+      <div class="spin"></div>
+      <span class="btn-lbl">Sign In → Admin Panel</span>
+    </button>
+  </div>
+</div>
+
+<!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-bg2"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><div class="pulse-dot"></div> Available for work</div>
+    <h1 class="hero-name">Hey, I'm <span class="accent" id="hero-name">—</span></h1>
+    <p class="hero-role" id="hero-role">Loading...</p>
+    <p class="hero-bio" id="hero-bio"></p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn-primary">View Projects</a>
+      <a id="resume-btn" href="#" class="btn-ghost" target="_blank">Download Resume</a>
+    </div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div> Scroll</div>
+</section>
+
+<!-- ── ABOUT ────────────────────────────────────────────────────────────── -->
+<section id="about">
+  <div class="section-wrap">
+    <div class="eyebrow">About</div>
+    <h2 class="section-h">Who I Am</h2>
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <div class="about-img" id="about-img">👤</div>
+        <div class="exp-badge">
+          <div class="num" id="exp-years">—</div>
+          <div class="lbl">Yrs Exp</div>
+        </div>
+      </div>
+      <div>
+        <div class="about-text" id="about-text">
+          <div class="skel skel-line" style="width:92%"></div>
+          <div class="skel skel-line" style="width:78%"></div>
+          <div class="skel skel-line" style="width:55%"></div>
+        </div>
+        <div class="about-links" id="about-links"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ───────────────────────────────────────────────────────────── -->
+<section id="skills">
+  <div class="section-wrap">
+    <div class="eyebrow">Skills</div>
+    <h2 class="section-h">What I Work With</h2>
+    <div class="skills-grid" id="skills-grid"></div>
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ───────────────────────────────────────────────────────── -->
+<section id="experience">
+  <div class="section-wrap">
+    <div class="eyebrow">Experience</div>
+    <h2 class="section-h">Work History</h2>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ─────────────────────────────────────────────────────────── -->
+<section id="projects">
+  <div class="section-wrap">
+    <div class="eyebrow">Projects</div>
+    <h2 class="section-h">Things I've Built</h2>
+    <div class="projects-grid" id="projects-grid"></div>
+  </div>
+</section>
+
+<!-- ── EDUCATION ────────────────────────────────────────────────────────── -->
+<section id="education">
+  <div class="section-wrap">
+    <div class="eyebrow">Education</div>
+    <h2 class="section-h">Academic Background</h2>
+    <div class="edu-grid">
+      <div class="edu-card">
+        <div class="edu-icon">🎓</div>
+        <div class="edu-degree">B.E. Electronics and Communication Engineering</div>
+        <div class="edu-school">Kathir College of Engineering</div>
+        <div class="edu-years">2021 – 2025</div>
+        <div class="edu-gpa">CGPA – 7.1</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-icon">📘</div>
+        <div class="edu-degree">Higher Secondary (HSC)</div>
+        <div class="edu-school">Kamaraj Metric Higher Secondary School</div>
+        <div class="edu-years">73%</div>
+      </div>
+      <div class="edu-card">
+        <div class="edu-icon">📗</div>
+        <div class="edu-degree">SSLC</div>
+        <div class="edu-school">Kamaraj Metric Higher Secondary School</div>
+        <div class="edu-years">67%</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ──────────────────────────────────────────────────────────── -->
+<section id="contact">
+  <div class="section-wrap">
+    <div class="eyebrow">Contact</div>
+    <div class="contact-grid">
+      <div class="contact-left">
+        <h3>Let's work<br>together.</h3>
+        <p>Have a project in mind, a role to fill, or just want to connect? Drop me a message and I'll reply within 24 hours.</p>
+        <div class="contact-details" id="contact-details"></div>
+      </div>
+      <div>
+        <div class="contact-form">
+          <div class="form-row">
+            <div class="form-group"><label>Name</label><input type="text" id="c-name" placeholder="Jane Smith" /></div>
+            <div class="form-group"><label>Email</label><input type="email" id="c-email" placeholder="jane@email.com" /></div>
+          </div>
+          <div class="form-group"><label>Subject</label><input type="text" id="c-subject" placeholder="Project inquiry..." /></div>
+          <div class="form-group"><label>Message</label><textarea id="c-message" placeholder="Tell me about your project..."></textarea></div>
+          <div id="form-status" class="form-status"></div>
+          <button class="btn-primary" id="send-btn" onclick="sendMessage()">Send Message →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ───────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo" id="footer-logo">⬡ GOWTHAM_A</div>
+  <div class="footer-text">Built with Flask + Supabase · <span id="footer-year"></span></div>
+  <button class="footer-admin" onclick="openModal()" title="Admin login">⬡ admin</button>
+</footer>
+<script src="/static/js/index.js"></script>
+</body>
+</html>
