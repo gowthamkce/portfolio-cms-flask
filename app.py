@@ -264,22 +264,46 @@ def get_profile():
 @app.route("/api/profile", methods=["POST"])
 @login_required
 def create_profile():
-    data = request.get_json(silent=True) or {}
+    body = request.get_json(silent=True) or {}
+    data = {
+        "name":         body.get("name", "").strip(),
+        "title":        body.get("title", "").strip(),
+        "bio":          body.get("bio", "").strip(),
+        "email":        body.get("email", "").strip(),
+        "resume_link":  body.get("resume_link", "").strip(),
+        "github_url":   body.get("github_url", "").strip(),
+        "linkedin_url": body.get("linkedin_url", "").strip(),
+        "twitter_url":  body.get("twitter_url", "").strip(),
+    }
+    if body.get("profile_image"):
+        data["profile_image"] = body["profile_image"]
     try:
         res = supabase.table("profile").insert(data).execute()
         return ok(res.data[0], 201)
     except Exception as exc:
         return err(str(exc), 500)
 
-@app.route("/api/profile/<int:profile_id>", methods=["PUT"])
+@app.route("/api/profile/<profile_id>", methods=["PUT"])
 @login_required
 def update_profile(profile_id):
-    data = request.get_json(silent=True) or {}
-    data.pop("profile_id", None)
     try:
-        res = supabase.table("profile").update(data).eq("profile_id", profile_id).execute()
-        return ok(res.data[0] if res.data else {})
+        body = request.get_json()          # ← must be this, NOT request.form
+        data = {
+            "name":          body.get("name", "").strip(),
+            "title":         body.get("title", "").strip(),
+            "bio":           body.get("bio", "").strip(),
+            "email":         body.get("email", "").strip(),
+            "resume_link":   body.get("resume_link", "").strip(),
+            "github_url":    body.get("github_url", "").strip(),
+            "linkedin_url":  body.get("linkedin_url", "").strip(),
+            "twitter_url":   body.get("twitter_url", "").strip(),
+        }
+        if body.get("profile_image"):
+            data["profile_image"] = body["profile_image"]
+
+        return ok(sb_update("profile", "profile_id", profile_id, data))
     except Exception as exc:
+        print("PROFILE UPDATE ERROR:", exc)
         return err(str(exc), 500)
 
 @app.route("/api/upload-profile", methods=["POST"])
