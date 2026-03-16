@@ -132,7 +132,8 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated
 
-def ok(data, status: int = 200):      return jsonify({"ok": True, "data": data}), status
+# ✅ Returns raw data — no wrapper
+def ok(data, status: int = 200):      return jsonify(data), status
 def err(msg: str, status: int = 400): return jsonify({"error": msg}), status
 def new_id() -> str:                  return str(uuid.uuid4())
 def now_iso() -> str:                 return datetime.now(timezone.utc).isoformat()
@@ -206,7 +207,6 @@ def me():
     if "admin_id" not in session:
         return ok({"logged_in": False})
     return ok({"logged_in": True, "name": session.get("admin_name", "Admin"), "admin_id": session["admin_id"]})
-
 
 
 @app.route("/")
