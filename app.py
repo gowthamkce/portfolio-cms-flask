@@ -55,7 +55,6 @@ def is_allowed_origin(origin: str) -> bool:
     ]
     if origin in allowed:
         return True
-    # Allow ALL vercel.app subdomains (covers preview deployments too)
     if origin.endswith(".vercel.app"):
         return True
     return False
@@ -108,6 +107,21 @@ app.url_map.strict_slashes = False
 UPLOAD_FOLDER = os.path.join(app.root_path, "static", "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+# ── Supabase Storage helper ───────────────────────────────────────────────────
+STORAGE_BUCKET = "images"  # Create this bucket in Supabase Storage (set to Public)
+
+def upload_to_supabase_storage(file, folder="uploads") -> str:
+    """Upload a file to Supabase Storage and return its public URL."""
+    filename = str(uuid.uuid4()) + "_" + secure_filename(file.filename)
+    path = f"{folder}/{filename}"
+    file_bytes = file.read()
+    content_type = file.content_type or "application/octet-stream"
+    supabase.storage.from_(STORAGE_BUCKET).upload(
+        path, file_bytes, {"content-type": content_type}
+    )
+    url = supabase.storage.from_(STORAGE_BUCKET).get_public_url(path)
+    return url
+
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def login_required(f):
@@ -118,7 +132,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated
 
-def ok(data, status: int = 200):      return jsonify(data), status
+def ok(data, status: int = 200):      return jsonify({"ok": True, "data": data}), status
 def err(msg: str, status: int = 400): return jsonify({"error": msg}), status
 def new_id() -> str:                  return str(uuid.uuid4())
 def now_iso() -> str:                 return datetime.now(timezone.utc).isoformat()
@@ -287,7 +301,7 @@ def create_profile():
 @login_required
 def update_profile(profile_id):
     try:
-        body = request.get_json()          # ← must be this, NOT request.form
+        body = request.get_json()
         data = {
             "name":          body.get("name", "").strip(),
             "title":         body.get("title", "").strip(),
@@ -300,7 +314,6 @@ def update_profile(profile_id):
         }
         if body.get("profile_image"):
             data["profile_image"] = body["profile_image"]
-
         return ok(sb_update("profile", "profile_id", profile_id, data))
     except Exception as exc:
         print("PROFILE UPDATE ERROR:", exc)
@@ -311,11 +324,10 @@ def update_profile(profile_id):
 def upload_profile():
     try:
         file = request.files.get("file")
-        if not file: return jsonify({"error": "No file uploaded"}), 400
-        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-        filename = str(uuid.uuid4()) + "_" + secure_filename(file.filename)
-        file.save(os.path.join(UPLOAD_FOLDER, filename))
-        return jsonify({"url": f"{BASE_URL}/static/uploads/{filename}"})
+        if not file:
+            return jsonify({"error": "No file uploaded"}), 400
+        url = upload_to_supabase_storage(file, folder="profiles")
+        return jsonify({"url": url})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -342,12 +354,11 @@ def create_project():
             "live_link":   request.form.get("live_link", "").strip(),
             "featured":    request.form.get("featured", "false").lower() == "true",
         }
-        if not data["title"]: return err("Title is required.", 400)
+        if not data["title"]:
+            return err("Title is required.", 400)
         image_file = request.files.get("image")
         if image_file and image_file.filename:
-            filename = str(uuid.uuid4()) + "_" + secure_filename(image_file.filename)
-            image_file.save(os.path.join(UPLOAD_FOLDER, filename))
-            data["image"] = f"{BASE_URL}/static/uploads/{filename}"
+            data["image"] = upload_to_supabase_storage(image_file, folder="projects")
         res = supabase.table("projects").insert(data).execute()
         return ok(res.data[0] if res.data else data, 201)
     except Exception as exc:
@@ -370,9 +381,7 @@ def update_project(project_id):
         data.pop("project_id", None)
         image_file = request.files.get("image")
         if image_file and image_file.filename:
-            filename = str(uuid.uuid4()) + "_" + secure_filename(image_file.filename)
-            image_file.save(os.path.join(UPLOAD_FOLDER, filename))
-            data["image"] = f"{BASE_URL}/static/uploads/{filename}"
+            data["image"] = upload_to_supabase_storage(image_file, folder="projects")
         return ok(sb_update("projects", "project_id", project_id, data))
     except Exception as exc:
         return err(str(exc), 500)
